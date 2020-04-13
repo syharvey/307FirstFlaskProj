@@ -1,4 +1,5 @@
 from flask import Flask
+from flask import jsonify
 from flask import request
 
 app = Flask(__name__)
@@ -38,16 +39,37 @@ users = {
 def hello_world():
     return 'Hello, World!'
 
-@app.route('/users')
+@app.route('/users', methods=['GET', 'POST', 'DELETE'])
 def get_users():
-   search_username = request.args.get('name') #accessing the value of parameter 'name'
-   if search_username :
-      subdict = {'users_list' : []}
-      for user in users['users_list']:
-         if user['name'] == search_username:
-            subdict['users_list'].append(user)
-      return subdict
-   return users
+   if request.method == 'GET':
+      search_username = request.args.get('name')
+      if search_username :
+         subdict = {'users_list' : []}
+         for user in users['users_list']:
+            if user['name'] == search_username:
+               subdict['users_list'].append(user)
+         return subdict
+      return users
+   elif request.method == 'POST':
+      userToAdd = request.get_json()
+      users['users_list'].append(userToAdd)
+      resp = jsonify(success=True)
+      #resp.status_code = 200 #optionally, you can always set a response code. 
+      # 200 is the default code for a normal response
+      return resp
+   elif request.method == 'DELETE':
+      search_username = request.get_json()
+      #search_username = request.args.get('id')
+      if search_username :
+        for user in users['users_list']:
+          if user == search_username:
+             print(user)
+             print()
+             users['users_list'].remove(user)
+             resp = jsonify(success=True)
+             #resp.status_code = 200 #optionally, you can always set a response code. 
+             # 200 is the default code for a normal response
+             return resp
 
 @app.route('/users/<id>')
 def get_user(id):
