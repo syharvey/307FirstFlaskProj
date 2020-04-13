@@ -45,10 +45,17 @@ def get_users():
       search_username = request.args.get('name')
       if search_username :
          subdict = {'users_list' : []}
-         for user in users['users_list']:
-            if user['name'] == search_username:
-               subdict['users_list'].append(user)
+         search_job = request.args.get('job')
+         if search_job : 
+             for user in users['users_list']:
+                if user['name'] == search_username and user['job'] == search_job:
+                    subdict['users_list'].append(user)
+         else:
+             for user in users['users_list']:
+                if user['name'] == search_username:
+                    subdict['users_list'].append(user)
          return subdict
+         
       return users
    elif request.method == 'POST':
       userToAdd = request.get_json()
