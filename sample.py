@@ -76,22 +76,36 @@ def get_users():
       if search_username :
         for user in users['users_list']:
           if user == search_username:
-             print(user)
-             print()
              users['users_list'].remove(user)
              resp = jsonify(success=True)
              resp.status_code = 200 #optionally, you can always set a response code. 
-             # 200 is the default code for a normal response
              return resp
 
 def getRandomId() :
         return ''.join(random.choices(string.ascii_lowercase+string.digits,k=6))
 
-@app.route('/users/<id>')
+@app.route('/users/<id>', methods=['GET','DELETE'])
 def get_user(id):
-   if id :
+   if request.method == 'GET':
+      if id :
+        for user in users['users_list']:
+          if user['id'] == id:
+            return user
+        return ({})
+      return users
+   if request.method == 'DELETE':
+      #search_username = (request.get_json())['id']
+      #search_username = request.args.get('id')
+      print("user to delete");
+      print(id);
+      #search_username = request.args.get('id')
+      #if search_username :
       for user in users['users_list']:
         if user['id'] == id:
-           return user
-      return ({})
-   return users
+           print(user)
+           print()
+           users['users_list'].remove(user)
+      resp = jsonify(success=True)
+      resp.status_code = 200 #optionally, you can always set a response code. 
+      return resp
+
