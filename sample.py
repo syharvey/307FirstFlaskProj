@@ -96,14 +96,10 @@ def get_user(id):
    if request.method == 'DELETE':
       #search_username = (request.get_json())['id']
       #search_username = request.args.get('id')
-      print("user to delete");
-      print(id);
       #search_username = request.args.get('id')
       #if search_username :
       for user in users['users_list']:
         if user['id'] == id:
-           print(user)
-           print()
            users['users_list'].remove(user)
       resp = jsonify(success=True)
       resp.status_code = 200 #optionally, you can always set a response code. 
